@@ -30,20 +30,22 @@ class MarkdownEditor:
         else:
             self.markdown += f'# {title.capitalize()}\n'
 
-    def add_tags(self, tags):
+    def add_tags(self, tags: list):
         if self.use_template:
-            self.template = self.template.replace('<!--tags_list-->', tags)
+            logging.warning(tags)
+            text = ', '.join(tags)
+            self.template = self.template.replace('<!--tags_list-->', text)
         else:
             self.markdown += f'''---\n\ttags: [{tags}]\n---\n'''
 
     def add_ingredients(self, ingredients: dict):
         text = ''
 
-        for component, ingr_list in ingredients:
-            text += f'#### {component}'
+        for component, ingr_list in ingredients.items():
+            text += f'#### {component}  \n'
 
             for amount, measurement, ingredient in ingr_list:
-                text += f'* {amount}{measurement} {ingredient}\n'
+                text += f'* {amount} {measurement} {ingredient}\n'
 
         if self.use_template:
             self.template = self.template.replace('<!--ingredients_list-->', text)
@@ -55,8 +57,8 @@ class MarkdownEditor:
     def add_instructions(self, instructions: dict):
         text = ''
 
-        for step, instruction in instructions:
-            text += f'**{step}**  {instruction}  '
+        for step, instruction in instructions.items():
+            text += f'**{step}**  \n{instruction}  \n'
 
         if self.use_template:
             self.template = self.template.replace('<!--instructions_list-->', text)
@@ -70,7 +72,7 @@ class MarkdownEditor:
     def add_nutrition(self, nutrition: dict):
         text = ''
 
-        for nutrition_type, amount in nutrition:
+        for nutrition_type, amount in nutrition.items():
             text += f'{nutrition_type}: {amount}  '
 
         if self.use_template:
@@ -86,16 +88,18 @@ class MarkdownEditor:
         else:
             self.markdown += link
 
-    def save(self, path):
+    def save(self, path, is_safe=False):
         path = Path(path)
-        full_path = path / self.title
+        full_path = path / (self.title + '.md')
 
-        if full_path.exists():
+        if full_path.exists() and is_safe:
             count = count_files(path, self.title)
-            new_title = self.title + '_' + count
+            new_title = f'{self.title}_{count}'
             full_path = path / new_title
+        else:
+            os.makedirs(path, exist_ok=True)
 
-        with open(full_path, 'w') as md:
+        with open(full_path, 'w', encoding="utf-8") as md:
             if self.use_template:
                 md.write(self.template)
             else:

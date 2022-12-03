@@ -1,9 +1,8 @@
-# <!--title-->
+---
+	tags: [<!--tags_list-->]
+---
 
-___
-<!--tags_list-->
 <!--original_recipe_link-->
-___
 
 ### Ingredients
 
@@ -12,8 +11,6 @@ ___
 
 ### Instructions
 
-**Step1**:  
-Get water boiling
 <!--instructions_list-->
 ---
 
