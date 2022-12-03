@@ -132,7 +132,7 @@ def simplify_tag(complex_tag: str):
 
 def extract_tags_from_ingredients(ingredients: dict) -> list:
     tags = set([i.type for i in itertools.chain(*ingredients.values())])
-    # since the results from filter and map are generators, we won't do a double iteration I think, should research
+    # since the results from filter and map are generators, we won't do a double iteration
     return list(filter(lambda tag: tag, map(simplify_tag, tags)))
 
 
