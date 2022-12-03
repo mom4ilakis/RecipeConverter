@@ -132,7 +132,8 @@ def simplify_tag(complex_tag: str):
 
 def extract_tags_from_ingredients(ingredients: dict) -> list:
     tags = set([i.type for i in itertools.chain(*ingredients.values())])
-    return list(filter(lambda tag: tag, [simplify_tag(tag) for tag in tags]))
+    # since the results from filter and map are generators, we won't do a double iteration I think, should research
+    return list(filter(lambda tag: tag, map(simplify_tag, tags)))
 
 
 def extract_steps(soup: BeautifulSoup):
@@ -183,9 +184,9 @@ if __name__ == '__main__':
             md_editor.add_tags(tags)
             md_editor.save(folder)
 
-            logging.info(f'Extracted tags:\n{tags}\n for {url}')
-            # logging.info(f'Extracted {ingredients} for ingredients from {url}')
-            # logging.info(f'Extracted {steps} for steps from {url}')
-            # logging.info(f'Extracted {nutrition} for nutrition from {url}')
+            logging.info(f'Extracted tags:\n{tags}\n from {url}')
+            logging.info(f'Extracted ingredients:\n{ingredients}\n from {url}')
+            logging.info(f'Extracted steps:\n{steps}\n from {url}')
+            logging.info(f'Extracted nutrition:\n{nutrition}\n from {url}')
         except Exception as e:
             logging.error(f'{e} for {url}')

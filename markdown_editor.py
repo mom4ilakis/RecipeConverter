@@ -31,8 +31,8 @@ class MarkdownEditor:
             self.markdown += f'# {title.capitalize()}\n'
 
     def add_tags(self, tags: list):
+        assert all(tags)
         if self.use_template:
-            logging.warning(tags)
             text = ', '.join(tags)
             self.template = self.template.replace('<!--tags_list-->', text)
         else:
