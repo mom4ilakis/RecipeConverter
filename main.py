@@ -1,8 +1,8 @@
+import argparse
 import datetime
 import itertools
 import logging
 import re
-import time
 from collections import defaultdict, namedtuple
 from functools import reduce
 from pathlib import Path
@@ -158,12 +158,30 @@ def extract_nutrition(soup: BeautifulSoup):
     return nutrients
 
 
-if __name__ == '__main__':
-    bookmarks_file = Path('bookmarks.html')
-    url = 'https://www.allrecipes.com/recipe/270770/garlic-noodles/'
-    urls = url_list_from_firefox_extracted_html(bookmarks_file)
+parser = argparse.ArgumentParser(
+    'Recipe converter',
+    'Used to convert recipes from allrecipes.com to .md files to be used with Obsidian'
+)
+parser.add_argument('--url', required=False, help='URL to be read and extracted to md file')
+parser.add_argument(
+    '--path',
+    default='bookmarks.html',
+    help='Path to exported firefox bookmarks to be extracted to md files'
+)
 
-    folder = r'D:\Notes\Recepies\Generated'
+if __name__ == '__main__':
+    args = parser.parse_args()
+    path_to_bookmarks = args.path
+    url_to_convert = args.url
+    bookmarks_file = Path(path_to_bookmarks)
+
+    if url_to_convert is not None:
+        urls = [url_to_convert]
+    else:
+        assert bookmarks_file.exists()
+        urls = url_list_from_firefox_extracted_html(bookmarks_file)
+
+    folder = r'D:\Notes\Recipes\Generated'
 
     for url in urls:
         page = requests.get(url)
